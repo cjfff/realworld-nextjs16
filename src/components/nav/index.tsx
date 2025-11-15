@@ -1,6 +1,10 @@
-export const Nav = () => {
-    const isLogin = false;
+import Link from 'next/link'
+import { headers } from 'next/headers';
+import { Menu } from './Menu'
+const menus = [{ 'path': '/', children: 'Home' }, { path: '/login', children: 'Sign in' }, { path: '/register', children: 'Sign up' }]
 
+export const Nav = async () => {
+    const isLogin = false;
 
     // return <nav className="navbar navbar-light">
     //     <div className="container">
@@ -29,13 +33,17 @@ export const Nav = () => {
 
     return <nav className="navbar navbar-light">
         <div className="container">
-            <a className="navbar-brand" href="/">conduit</a>
+            <Link className="navbar-brand" href="/">
+                conduit
+            </Link>
             <ul className="nav navbar-nav pull-xs-right">
                 {
                     isLogin ? <>
                         <li className="nav-item">
                             {/* <!-- Add "active" className when you're on that page" --> */}
-                            <a className="nav-link active" href="/">Home</a>
+                            <Link className="nav-link active" href="/">
+                                Home
+                            </Link>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="/editor"> <i className="ion-compose"></i>&nbsp;New Article </a>
@@ -50,19 +58,7 @@ export const Nav = () => {
                             </a>
                         </li>
                     </>
-                        : <>
-
-                            <li className="nav-item">
-                                {/* <!-- Add "active" className when you're on that page" --> */}
-                                <a className="nav-link active" href="/">Home</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="/login">Sign in</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="/register">Sign up</a>
-                            </li>
-                        </>
+                        : <Menu menus={menus}></Menu>
                 }
 
             </ul>

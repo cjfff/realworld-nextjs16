@@ -5,6 +5,7 @@
 import { redirect } from "next/navigation";
 import { inputsSchema, Inputs } from "./types";
 import fetchClient from "@/lib/api";
+import { createSession } from "@/lib/session";
 
 export type ActionState = {
     errors?: string[]
@@ -27,11 +28,10 @@ export const signUpAction = async (prevState: ActionState, formData: FormData) =
                 user: result.data
             }
         })
-        console.log(response)
 
         if (!response.error) {
 
-            // createSession(response.data.user.token);
+            createSession(response.data.user.token);
             redirect("/");
         }
 
