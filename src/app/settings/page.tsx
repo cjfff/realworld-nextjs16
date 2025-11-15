@@ -1,3 +1,5 @@
+import { logout } from "./actions";
+
 export default function Settings() {
     return <div className="settings-page">
         <div className="container page">
@@ -38,7 +40,10 @@ export default function Settings() {
                         </fieldset>
                     </form>
                     <hr />
-                    <button className="btn btn-outline-danger">Or click here to logout.</button>
+                    <form action={logout}>
+
+                        <button type="submit" className="btn btn-outline-danger">Or click here to logout.</button>
+                    </form>
                 </div>
             </div>
         </div>
