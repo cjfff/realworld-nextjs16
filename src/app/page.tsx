@@ -1,65 +1,105 @@
+import { fetchClient } from "@/lib/api";
 import Image from "next/image";
 
-export default function Home() {
+export default async function Home() {
+
+  const data = await fetchClient.GET('/articles')
+  console.log(data)
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="home-page">
+      <div className="banner">
+        <div className="container">
+          <h1 className="logo-font">conduit</h1>
+          <p>A place to share your knowledge.</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      <div className="container page">
+        <div className="row">
+          <div className="col-md-9">
+            <div className="feed-toggle">
+              <ul className="nav nav-pills outline-active">
+                {/* <li className="nav-item">
+                  <a className="nav-link" href="">Your Feed</a>
+                </li> */}
+                <li className="nav-item">
+                  <a className="nav-link active" href="">Global Feed</a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="article-preview">
+              <div className="article-meta">
+                <a href="/profile/eric-simons"><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
+                <div className="info">
+                  <a href="/profile/eric-simons" className="author">Eric Simons</a>
+                  <span className="date">January 20th</span>
+                </div>
+                <button className="btn btn-outline-primary btn-sm pull-xs-right">
+                  <i className="ion-heart"></i> 29
+                </button>
+              </div>
+              <a href="/article/how-to-build-webapps-that-scale" className="preview-link">
+                <h1>How to build webapps that scale</h1>
+                <p>This is the description for the post.</p>
+                <span>Read more...</span>
+                <ul className="tag-list">
+                  <li className="tag-default tag-pill tag-outline">realworld</li>
+                  <li className="tag-default tag-pill tag-outline">implementations</li>
+                </ul>
+              </a>
+            </div>
+
+            <div className="article-preview">
+              <div className="article-meta">
+                <a href="/profile/albert-pai"><img src="http://i.imgur.com/N4VcUeJ.jpg" /></a>
+                <div className="info">
+                  <a href="/profile/albert-pai" className="author">Albert Pai</a>
+                  <span className="date">January 20th</span>
+                </div>
+                <button className="btn btn-outline-primary btn-sm pull-xs-right">
+                  <i className="ion-heart"></i> 32
+                </button>
+              </div>
+              <a href="/article/the-song-you" className="preview-link">
+                <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
+                <p>This is the description for the post.</p>
+                <span>Read more...</span>
+                <ul className="tag-list">
+                  <li className="tag-default tag-pill tag-outline">realworld</li>
+                  <li className="tag-default tag-pill tag-outline">implementations</li>
+                </ul>
+              </a>
+            </div>
+
+            <ul className="pagination">
+              <li className="page-item active">
+                <a className="page-link" href="">1</a>
+              </li>
+              <li className="page-item">
+                <a className="page-link" href="">2</a>
+              </li>
+            </ul>
+          </div>
+
+          <div className="col-md-3">
+            <div className="sidebar">
+              <p>Popular Tags</p>
+
+              <div className="tag-list">
+                <a href="" className="tag-pill tag-default">programming</a>
+                <a href="" className="tag-pill tag-default">javascript</a>
+                <a href="" className="tag-pill tag-default">emberjs</a>
+                <a href="" className="tag-pill tag-default">angularjs</a>
+                <a href="" className="tag-pill tag-default">react</a>
+                <a href="" className="tag-pill tag-default">mean</a>
+                <a href="" className="tag-pill tag-default">node</a>
+                <a href="" className="tag-pill tag-default">rails</a>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
