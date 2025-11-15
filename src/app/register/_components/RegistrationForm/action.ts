@@ -1,7 +1,5 @@
 "use server";
 
-// import { createSession } from "@/utils/auth/session";
-// import { parseWithZod } from "@conform-to/zod";
 import { redirect } from "next/navigation";
 import { inputsSchema, Inputs } from "./types";
 import fetchClient from "@/lib/api";
@@ -29,16 +27,16 @@ export const signUpAction = async (prevState: ActionState, formData: FormData) =
             }
         })
 
-        if (!response.error) {
+        if (response.data?.user) {
 
-            createSession(response.data.user.token);
+            await createSession(response.data.user.token);
             redirect("/");
         }
 
         switch (response.response.status) {
             case 422:
                 return {
-                    errors: Object.values(response.error.errors).flat()
+                    errors: response.error?.errors.body || []
                 }
             default:
                 throw new Error("api error");

@@ -35,7 +35,7 @@ export default function RegistrationForm() {
         <>
             {
                 state?.errors?.length ? <ul className="error-messages">
-                    <li>That email is already taken</li>
+
                     {
                         state.errors.map(error => {
                             return <li>{error}</li>

@@ -4,6 +4,7 @@ import { SessionPayload } from '@/lib/definitions'
 import { cookies } from 'next/headers'
 
 
+const cookieKey = 'realworld_session'
 const secretKey = process.env.SESSION_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
 
@@ -28,11 +29,12 @@ export async function decrypt(session: string | undefined = '') {
 
 
 export async function createSession(token: string) {
+    "use server"
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     const session = await encrypt({ token, expiresAt })
     const cookieStore = await cookies()
 
-    cookieStore.set('session', session, {
+    cookieStore.set(cookieKey, session, {
         httpOnly: true,
         secure: true,
         expires: expiresAt,
@@ -41,9 +43,8 @@ export async function createSession(token: string) {
     })
 }
 
-
 export async function updateSession() {
-    const session = (await cookies()).get('session')?.value
+    const session = (await cookies()).get(cookieKey)?.value
     const payload = await decrypt(session)
 
     if (!session || !payload) {
@@ -53,7 +54,7 @@ export async function updateSession() {
     const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
     const cookieStore = await cookies()
-    cookieStore.set('session', session, {
+    cookieStore.set(cookieKey, session, {
         httpOnly: true,
         secure: true,
         expires: expires,
@@ -65,5 +66,13 @@ export async function updateSession() {
 
 export async function deleteSession() {
     const cookieStore = await cookies()
-    cookieStore.delete('session')
+    cookieStore.delete(cookieKey)
+}
+
+export async function getSession() {
+    const cookieStore = await cookies()
+    const cookie = cookieStore.get(cookieKey)
+    const user = await decrypt(cookie?.value)
+
+    return (user as SessionPayload)?.token
 }
