@@ -22,7 +22,7 @@ export default function Settings() {
                             <fieldset className="form-group">
                                 <textarea
                                     className="form-control form-control-lg"
-                                    rows="8"
+                                    rows={8}
                                     placeholder="Short bio about you"
                                 ></textarea>
                             </fieldset>

@@ -1,9 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { inputsSchema, Inputs } from "./types";
 import fetchClient from "@/lib/api";
 import { createSession } from "@/lib/session";
+import { inputsSchema } from "@/lib/schemas/register";
 
 export type ActionState = {
     errors?: string[]

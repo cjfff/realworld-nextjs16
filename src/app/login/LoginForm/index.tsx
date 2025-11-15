@@ -1,16 +1,14 @@
 "use client"
 
-import { useActionState, useRef, useTransition } from "react"
-import { signUpAction } from './action'
+import { useRef, useTransition } from "react"
+import { loginAction } from './action'
 import { useForm } from "react-hook-form"
-import { resolver } from "@/lib/schemas/register"
+import { resolver } from "@/lib/schemas/login"
 import { ErrorMessage } from "@/components/ErrorMessage"
 import { useResettableActionState } from "@/hooks/useResetActionState"
 
-
-
-export default function RegistrationForm() {
-    const [state, disaptch, isPending, reset] = useResettableActionState(signUpAction, undefined)
+export default function LoginForm() {
+    const [state, disaptch, isPending, reset] = useResettableActionState(loginAction, undefined)
 
     const formRef = useRef<HTMLFormElement>(null)
 
@@ -32,7 +30,7 @@ export default function RegistrationForm() {
 
                     {
                         state.errors.map(error => {
-                            return <li>{error}</li>
+                            return <li key={error}>{error}</li>
                         })
                     }
                 </ul>
@@ -40,22 +38,18 @@ export default function RegistrationForm() {
             }
 
 
-            <form 
-            ref={formRef}
-            onSubmit={e => {
-                e.preventDefault()
-                handleSubmit(() => {
-                    startTransition(() => {
-                        handleFormSubmit()
-                    })
-                })(e)
-            }}
-            onChange={reset}
-            >
-                <fieldset className="form-group">
-                    <input {...register('username')} className="form-control form-control-lg" type="text" placeholder="Username" />
-                </fieldset>
-                <ErrorMessage error={errors.username} />
+            <form
+                ref={formRef}
+                onSubmit={e => {
+                    e.preventDefault()
+                    handleSubmit(() => {
+                        startTransition(() => {
+                            handleFormSubmit()
+                        })
+                    })(e)
+                }} 
+                onChange={() => reset()}
+                >
                 <fieldset className="form-group">
                     <input  {...register('email')} className="form-control form-control-lg" type="text" placeholder="Email" />
                 </fieldset>
@@ -66,7 +60,7 @@ export default function RegistrationForm() {
                 </fieldset>
                 <ErrorMessage error={errors.password} />
 
-                <button type="submit" className="btn btn-lg btn-primary pull-xs-right" disabled={isPending}>{isPending ? 'pending' : "Sign up"}</button>
+                <button type="submit" className="btn btn-lg btn-primary pull-xs-right" disabled={isPending}>{isPending ? 'pending' : "Sign in"}</button>
             </form>
 
         </>
