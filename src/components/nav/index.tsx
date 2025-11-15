@@ -3,7 +3,6 @@ import { Menu } from './Menu'
 import { getSession } from '@/lib/session'
 import { LoginLink } from './LoginLink'
 
-const defaultAvatarUrl = 'https://raw.githubusercontent.com/gothinkster/node-express-realworld-example-app/refs/heads/master/src/assets/images/smiley-cyrus.jpeg'
 
 const menus = [{ 'path': '/', children: 'Home' }, { path: '/login', children: 'Sign in', login: false }, { path: '/register', children: 'Sign up', login: false },
     { path: '/editor', children: <> <i className="ion-compose"></i>&nbsp;New Article</>, login: true },

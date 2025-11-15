@@ -10,11 +10,11 @@ export const fetchClient = createFetchClient<paths>({ baseUrl });
 
 const myMiddleware: Middleware = {
     async onRequest({ request, options }) {
-        // const token = await getSession()
+        const token = await getSession()
 
-        // if (token) {
-        //     request.headers.set("Authorization", `Token ${token}`);
-        // }
+        if (token) {
+            request.headers.set("Authorization", `Token ${token}`);
+        }
         return request;
     },
     async onResponse({ request, response, options }) {
