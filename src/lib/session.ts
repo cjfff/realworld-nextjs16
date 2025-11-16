@@ -4,7 +4,7 @@ import { SessionPayload } from '@/lib/definitions'
 import { cookies } from 'next/headers'
 
 
-const cookieKey = 'realworld_session'
+export const cookieKey = 'realworld_session'
 const secretKey = process.env.SESSION_SECRET
 const encodedKey = new TextEncoder().encode(secretKey)
 
@@ -76,3 +76,4 @@ export async function getSession() {
 
     return (user as SessionPayload)?.token
 }
+

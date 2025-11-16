@@ -1,6 +1,6 @@
 import { FieldError } from "react-hook-form"
 
-export const ErrorMessage = ({ error }: { error?: FieldError }) => {
+export const ErrorMessage = ({ error }: { error?: {message?: string} }) => {
     if (!error) {
         return
     }
