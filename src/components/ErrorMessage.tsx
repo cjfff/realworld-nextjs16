@@ -1,11 +1,15 @@
-import { FieldError } from "react-hook-form"
-
-export const ErrorMessage = ({ error }: { error?: {message?: string} }) => {
-    if (!error) {
+export const ErrorMessage = ({ error, errors }: { error?: { message?: string }, errors?: string[] }) => {
+    if (!error && !errors?.length) {
         return
     }
 
+    const list = errors?.length ? errors : [error?.message]
+
     return <ul className="error-messages">
-        <li>{error.message}</li>
+        {
+            list.map(error => {
+                return <li>{error}</li>
+            })
+        }
     </ul>
 }

@@ -6,16 +6,19 @@ import { useForm } from "react-hook-form"
 import { resolver } from "@/lib/schemas/login"
 import { ErrorMessage } from "@/components/ErrorMessage"
 import { useResettableActionState } from "@/hooks/useResetActionState"
+import { useErrorSync } from "@/hooks/useSyncError"
 
 export default function LoginForm() {
     const [state, disaptch, isPending, reset] = useResettableActionState(loginAction, undefined)
 
     const formRef = useRef<HTMLFormElement>(null)
 
-    const { register, formState: { errors }, handleSubmit } = useForm({
+    const { register, formState: { errors }, handleSubmit, setError } = useForm({
         resolver,
         errors: {}
     })
+
+    useErrorSync({ state, setError })
 
     const handleFormSubmit = async () => {
         await disaptch(new FormData(formRef.current!))
@@ -25,18 +28,7 @@ export default function LoginForm() {
 
     return (
         <>
-            {
-                state?.errors?.length ? <ul className="error-messages">
-
-                    {
-                        state.errors.map(error => {
-                            return <li key={error}>{error}</li>
-                        })
-                    }
-                </ul>
-                    : null
-            }
-
+            <ErrorMessage errors={state?.formErrors} />
 
             <form
                 ref={formRef}

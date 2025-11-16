@@ -5,11 +5,7 @@ import fetchClient from "@/lib/api";
 import { createSession } from "@/lib/session";
 import { inputsSchema } from "@/lib/schemas/login";
 
-export type ActionState = {
-    errors?: string[]
-} | undefined;
-
-export const loginAction = async (prevState: ActionState, formData: FormData) => {
+export const loginAction = async (prevState: any, formData: FormData) => {
 
     const data = Object.fromEntries(formData)
 
@@ -17,7 +13,7 @@ export const loginAction = async (prevState: ActionState, formData: FormData) =>
 
     if (!result.success) {
         return {
-            errors: result.error.flatten().formErrors
+            errors: result.error.flatten().fieldErrors
         }
     }
 
@@ -36,7 +32,7 @@ export const loginAction = async (prevState: ActionState, formData: FormData) =>
     switch (response.response.status) {
         case 422:
             return {
-                errors: response.error?.errors.body || []
+                formErrors: response.error?.errors.body || []
             }
         default:
             throw new Error("api error");
