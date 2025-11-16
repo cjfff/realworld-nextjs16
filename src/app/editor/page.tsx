@@ -18,7 +18,7 @@ export default function Article() {
                             <fieldset className="form-group">
                                 <textarea
                                     className="form-control"
-                                    rows="8"
+                                    rows={8}
                                     placeholder="Write your article (in markdown)"
                                 ></textarea>
                             </fieldset>
