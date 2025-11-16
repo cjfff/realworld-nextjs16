@@ -1,6 +1,6 @@
 "use server"
 
-import {deleteSession} from '@/lib/session'
+import {createSession, deleteSession} from '@/lib/session'
 import { revalidatePath } from 'next/cache'
 import { redirect } from "next/navigation";
 import fetchClient from "@/lib/api";
@@ -44,6 +44,8 @@ export const updateAction = async (prevState: any, formData: FormData) => {
     })
 
     if (response.data?.user) {
+
+        await createSession(response.data.user.token)
         revalidatePath('/', 'layout')
         return
     }

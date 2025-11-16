@@ -30,6 +30,7 @@ export const loginAction = async (prevState: any, formData: FormData) => {
     }
 
     switch (response.response.status) {
+        case 401:
         case 422:
             return {
                 formErrors: response.error?.errors.body || []
