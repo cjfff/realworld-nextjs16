@@ -1,23 +1,45 @@
-export default function Profile() {
+import { fetchClient } from "@/lib/api"
+import { getSession } from "@/lib/session";
+import Link from "next/link";
+import { FollowButton } from "./_components/FollowButton/index";
+import { defaultAvatarUrl } from "@/components/nav/LoginLink";
+
+export default async function Profile({ params }: {
+    params: Promise<{ name: string }>
+}) {
+    const username = await (await params).name
+
+    const profileRes = await fetchClient.GET('/profiles/{username}', {
+        'params': {
+            path: {
+                username
+            }
+        }
+    })
+
+    let currentUser = await getSession() ? (await fetchClient.GET('/user')).data?.user : null
+    
+    const profile = profileRes.data?.profile
+
     return <div className="profile-page">
         <div className="user-info">
             <div className="container">
                 <div className="row">
                     <div className="col-xs-12 col-md-10 offset-md-1">
-                        <img src="http://i.imgur.com/Qr71crq.jpg" className="user-img" />
-                        <h4>Eric Simons</h4>
+                        <img src={profile?.image || defaultAvatarUrl} className="user-img object-fill" alt={profile?.username} />
+                        <h4>{profile?.username}</h4>
                         <p>
-                            Cofounder @GoThinkster, lived in Aol's HQ for a few months, kinda looks like Peeta from
-                            the Hunger Games
+                            {profile?.bio || `There is nothing left from ${profile?.username}`}
                         </p>
-                        <button className="btn btn-sm btn-outline-secondary action-btn">
-                            <i className="ion-plus-round"></i>
-                            &nbsp; Follow Eric Simons
-                        </button>
-                        <button className="btn btn-sm btn-outline-secondary action-btn">
-                            <i className="ion-gear-a"></i>
-                            &nbsp; Edit Profile Settings
-                        </button>
+                        {/* when the profile is the same user with the current login, not need to display the followButton */}
+                        {currentUser?.username === username ? null : <FollowButton profileUser={profile} />}
+
+                        {currentUser ?
+                                <Link href={`/settings`} className="btn btn-sm btn-outline-secondary action-btn">
+                                    <i className="ion-gear-a"></i>
+                                    &nbsp; Edit Profile Settings
+                                </Link>
+                            : null}
                     </div>
                 </div>
             </div>
