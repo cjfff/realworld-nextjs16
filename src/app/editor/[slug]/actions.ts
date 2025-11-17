@@ -1,11 +1,10 @@
 "use server";
 import fetchClient from "@/lib/api";
-import { getSession } from "@/lib/getCookie";
-import { Inputs, inputsSchema } from "@/lib/schemas/newArticle";
+import { inputsSchema, Inputs} from "@/lib/schemas/newArticle";
+import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
-export async function submitAction(_: any, value: Inputs) {
-
+export async function editAction(value: Inputs) {
   const result = inputsSchema.safeParse(value);
 
   if (!(await getSession())) {
@@ -18,9 +17,16 @@ export async function submitAction(_: any, value: Inputs) {
     };
   }
 
-  const res = await fetchClient.POST("/articles", {
+  const {slug, ...article } = result.data
+
+  const res = await fetchClient.PUT("/articles/{slug}", {
     body: {
-      article: result.data,
+      article: article,
+    },
+    params: {
+      path: {
+        slug: slug!,
+      },
     },
   });
 
