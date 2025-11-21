@@ -5,6 +5,7 @@ import { FollowButton } from "./_components/FollowButton/index";
 import { defaultAvatarUrl } from "@/components/nav/LoginLink";
 import clsx from "clsx";
 import { Article } from "@/components/Article";
+import { Pagination } from "@/components/Pagination";
 
 export default async function Profile(props: {
   params: Promise<{ name: string }>;
@@ -14,7 +15,6 @@ export default async function Profile(props: {
     props.params,
     props.searchParams,
   ]);
-  console.log(props, "props");
 
   const username = params.name;
   const page = searchParams.page || 1;
@@ -113,28 +113,25 @@ export default async function Profile(props: {
             </div>
 
             {articles.map((article) => {
-              return <Article key={article.slug} article={article} revalidatePath={profilePath} />;
+              return (
+                <Article
+                  key={article.slug}
+                  article={article}
+                  revalidatePath={profilePath}
+                />
+              );
             })}
 
-            {articles.length ? (
-              <ul className="pagination">
-                {Array.from({ length: totalPages }).map((_, i) => {
-                  const currentPage = i + 1;
-                  return (
-                    <li
-                      className={clsx("page-item", {
-                        active: currentPage === Number(page),
-                      })}
-                      key={currentPage + ""}
-                    >
-                      <a className="page-link" href="">
-                        {currentPage}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : null}
+            <Pagination
+              page={page}
+              size={size}
+              total={articles.length}
+              pathPrefix={
+                searchKey === "author"
+                  ? `/profole/${username}`
+                  : `/profole/${username}?favorited=1`
+              }
+            />
           </div>
         </div>
       </div>

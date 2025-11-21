@@ -1,12 +1,41 @@
+import { Article } from "@/components/Article";
+import { Pagination } from "@/components/Pagination";
 import { fetchClient } from "@/lib/api";
+import clsx from "clsx";
 import Image from "next/image";
+import Link from "next/link";
 
-export default async function Home() {
+export default async function Home(props: {
+  searchParams: Promise<{
+    page?: number;
+    size: number;
+    tag: string;
+    feed: string;
+  }>;
+}) {
+  const [searchParams] = await Promise.all([props.searchParams]);
+  const page = searchParams.page || 1;
+  const size = searchParams.size || 10;
+  const tag = searchParams.tag || "";
+  const searchKey = searchParams.feed ? "feed" : "";
 
-  const [articles, tags] = await Promise.all([
-    fetchClient.GET("/articles"),
+  const [articlesRes, tags] = await Promise.all([
+    fetchClient.GET(searchParams.feed ? "/articles/feed" : "/articles", {
+      params: {
+        query: {
+          limit: size,
+          offset: size * (page - 1),
+          tag,
+        },
+      },
+    }),
     fetchClient.GET("/tags"),
   ]);
+
+  const articles = articlesRes.data?.articles || [];
+  const articlesCount = articlesRes.data?.articlesCount;
+
+  const totalPages = Math.ceil((articlesCount || 1) / size);
 
   return (
     <div className="home-page">
@@ -23,94 +52,44 @@ export default async function Home() {
             <div className="feed-toggle">
               <ul className="nav nav-pills outline-active">
                 <li className="nav-item">
-                  <a className="nav-link" href="">Your Feed</a>
+                  <Link
+                    className={clsx("nav-link", {
+                      active: !searchParams.feed,
+                    })}
+                    href={`/`}
+                  >
+                    Global Feed
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link active" href="">
-                    Global Feed
-                  </a>
+                  <Link
+                    className={clsx("nav-link", {
+                      active: searchParams.feed,
+                    })}
+                    href={`/?feed=1`}
+                  >
+                    Your Feed
+                  </Link>
                 </li>
               </ul>
             </div>
 
-            <div className="article-preview">
-              <div className="article-meta">
-                <a href="/profile/eric-simons">
-                  <img src="http://i.imgur.com/Qr71crq.jpg" />
-                </a>
-                <div className="info">
-                  <a href="/profile/eric-simons" className="author">
-                    Eric Simons
-                  </a>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 29
-                </button>
-              </div>
-              <a
-                href="/article/how-to-build-webapps-that-scale"
-                className="preview-link"
-              >
-                <h1>How to build webapps that scale</h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-                <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">
-                    realworld
-                  </li>
-                  <li className="tag-default tag-pill tag-outline">
-                    implementations
-                  </li>
-                </ul>
-              </a>
-            </div>
+            {articles.map((article) => {
+              return (
+                <Article
+                  key={article.slug}
+                  article={article}
+                  revalidatePath={"/"}
+                />
+              );
+            })}
 
-            <div className="article-preview">
-              <div className="article-meta">
-                <a href="/profile/albert-pai">
-                  <img src="http://i.imgur.com/N4VcUeJ.jpg" />
-                </a>
-                <div className="info">
-                  <a href="/profile/albert-pai" className="author">
-                    Albert Pai
-                  </a>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 32
-                </button>
-              </div>
-              <a href="/article/the-song-you" className="preview-link">
-                <h1>
-                  The song you won't ever stop singing. No matter how hard you
-                  try.
-                </h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-                <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">
-                    realworld
-                  </li>
-                  <li className="tag-default tag-pill tag-outline">
-                    implementations
-                  </li>
-                </ul>
-              </a>
-            </div>
-
-            <ul className="pagination">
-              <li className="page-item active">
-                <a className="page-link" href="">
-                  1
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="">
-                  2
-                </a>
-              </li>
-            </ul>
+            <Pagination
+              page={page}
+              size={size}
+              total={articles.length}
+              pathPrefix={!searchParams.feed ? `/` : `/?feed=1`}
+            />
           </div>
 
           <div className="col-md-3">
@@ -118,10 +97,16 @@ export default async function Home() {
               <p>Popular Tags</p>
               {tags.data?.tags.length ? (
                 <div className="tag-list">
-                  {tags.data?.tags.map(tag => {
-                    return <a href="" key={tag} className="tag-pill tag-default">
-                      {tag}
-                    </a>;
+                  {tags.data?.tags.map((tag) => {
+                    return (
+                      <Link
+                        href={`/?tag=${tag}`}
+                        key={tag}
+                        className="tag-pill tag-default"
+                      >
+                        {tag}
+                      </Link>
+                    );
                   })}
                 </div>
               ) : null}
