@@ -1,4 +1,5 @@
 import fetchClient from "@/lib/api";
+import { getSession } from "@/lib/getCookie";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -40,6 +41,9 @@ export const likePostAction = async ({
   revalidatePath: string;
 }) => {
   "use server";
+  if (!(await getSession())) {
+    return redirect("/login");
+  }
   const params = {
     params: {
       path: {
@@ -54,8 +58,6 @@ export const likePostAction = async ({
   revalidatePath(revalidate);
 };
 
-
-
 export const followActions = async ({
   username,
   follow,
@@ -66,6 +68,10 @@ export const followActions = async ({
   slug: string;
 }) => {
   "use server";
+  if (!(await getSession())) {
+    return redirect("/login");
+  }
+
   const params = {
     params: {
       path: {

@@ -13,6 +13,7 @@ export const Article = ({
 }) => {
   const profileHref = `/profile/${article.author.username}`;
   const articleHref = `/article/${article.slug}`;
+  
   return (
     <div className="article-preview">
       <div className="article-meta">

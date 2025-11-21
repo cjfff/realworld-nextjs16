@@ -1,8 +1,8 @@
 import { Article } from "@/components/Article";
 import { Pagination } from "@/components/Pagination";
 import { fetchClient } from "@/lib/api";
+import { getSession } from "@/lib/session";
 import clsx from "clsx";
-import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home(props: {
@@ -17,7 +17,7 @@ export default async function Home(props: {
   const page = searchParams.page || 1;
   const size = searchParams.size || 10;
   const tag = searchParams.tag || "";
-  const searchKey = searchParams.feed ? "feed" : "";
+  const isLogin = !!(await getSession());
 
   const [articlesRes, tags] = await Promise.all([
     fetchClient.GET(searchParams.feed ? "/articles/feed" : "/articles", {
@@ -33,9 +33,6 @@ export default async function Home(props: {
   ]);
 
   const articles = articlesRes.data?.articles || [];
-  const articlesCount = articlesRes.data?.articlesCount;
-
-  const totalPages = Math.ceil((articlesCount || 1) / size);
 
   return (
     <div className="home-page">
@@ -61,16 +58,18 @@ export default async function Home(props: {
                     Global Feed
                   </Link>
                 </li>
-                <li className="nav-item">
-                  <Link
-                    className={clsx("nav-link", {
-                      active: searchParams.feed,
-                    })}
-                    href={`/?feed=1`}
-                  >
-                    Your Feed
-                  </Link>
-                </li>
+                {isLogin ? (
+                  <li className="nav-item">
+                    <Link
+                      className={clsx("nav-link", {
+                        active: searchParams.feed,
+                      })}
+                      href={`/?feed=1`}
+                    >
+                      Your Feed
+                    </Link>
+                  </li>
+                ) : null}
               </ul>
             </div>
 
