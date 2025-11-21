@@ -1,118 +1,143 @@
-import { fetchClient } from "@/lib/api"
+import { fetchClient } from "@/lib/api";
 import { getSession } from "@/lib/session";
 import Link from "next/link";
 import { FollowButton } from "./_components/FollowButton/index";
 import { defaultAvatarUrl } from "@/components/nav/LoginLink";
+import clsx from "clsx";
+import { Article } from "@/components/Article";
 
-export default async function Profile({ params }: {
-    params: Promise<{ name: string }>
+export default async function Profile(props: {
+  params: Promise<{ name: string }>;
+  searchParams: Promise<{ page?: number; size: number; favorited: string }>;
 }) {
-    const username = await (await params).name
+  const [params, searchParams] = await Promise.all([
+    props.params,
+    props.searchParams,
+  ]);
+  console.log(props, "props");
 
-    const profileRes = await fetchClient.GET('/profiles/{username}', {
-        'params': {
-            path: {
-                username
-            }
-        }
-    })
+  const username = params.name;
+  const page = searchParams.page || 1;
+  const size = searchParams.size || 10;
+  const searchKey = searchParams.favorited ? 'favorited' : 'author'
 
-    let currentUser = await getSession() ? (await fetchClient.GET('/user')).data?.user : null
-    
-    const profile = profileRes.data?.profile
+  const profilePath = `/profile/${username}`
 
-    return <div className="profile-page">
-        <div className="user-info">
-            <div className="container">
-                <div className="row">
-                    <div className="col-xs-12 col-md-10 offset-md-1">
-                        <img src={profile?.image || defaultAvatarUrl} className="user-img object-fill" alt={profile?.username} />
-                        <h4>{profile?.username}</h4>
-                        <p>
-                            {profile?.bio || `There is nothing left from ${profile?.username}`}
-                        </p>
-                        {/* when the profile is the same user with the current login, not need to display the followButton */}
-                        {currentUser?.username === username ? null : <FollowButton profileUser={profile} />}
+  const [profileRes, currentUser, articlesRes] = await Promise.all([
+    fetchClient.GET("/profiles/{username}", {
+      params: {
+        path: {
+          username,
+        },
+      },
+    }),
+    (await getSession()) ? (await fetchClient.GET("/user")).data?.user : null,
+    fetchClient.GET("/articles", {
+      params: {
+        query: {
+          limit: size,
+          offset: size * (page - 1),
+          [searchKey]: username,
+        },
+      },
+    }),
+  ]);
 
-                        {currentUser ?
-                                <Link href={`/settings`} className="btn btn-sm btn-outline-secondary action-btn">
-                                    <i className="ion-gear-a"></i>
-                                    &nbsp; Edit Profile Settings
-                                </Link>
-                            : null}
-                    </div>
-                </div>
-            </div>
-        </div>
+  const profile = profileRes.data?.profile;
+  const articles = articlesRes.data?.articles || [];
+  const articlesCount = articlesRes.data?.articlesCount;
 
+  const totalPages = Math.ceil((articlesCount || 1) / size);
+
+  return (
+    <div className="profile-page">
+      <div className="user-info">
         <div className="container">
-            <div className="row">
-                <div className="col-xs-12 col-md-10 offset-md-1">
-                    <div className="articles-toggle">
-                        <ul className="nav nav-pills outline-active">
-                            <li className="nav-item">
-                                <a className="nav-link active" href="">My Articles</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="">Favorited Articles</a>
-                            </li>
-                        </ul>
-                    </div>
+          <div className="row">
+            <div className="col-xs-12 col-md-10 offset-md-1">
+              <img
+                src={profile?.image || defaultAvatarUrl}
+                className="user-img object-fill"
+                alt={profile?.username}
+              />
+              <h4>{profile?.username}</h4>
+              <p>
+                {profile?.bio ||
+                  `There is nothing left from ${profile?.username}`}
+              </p>
+              {/* when the profile is the same user with the current login, not need to display the followButton */}
+              {currentUser?.username === username ? null : (
+                <FollowButton profileUser={profile} />
+              )}
 
-                    <div className="article-preview">
-                        <div className="article-meta">
-                            <a href="/profile/eric-simons"><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
-                            <div className="info">
-                                <a href="/profile/eric-simons" className="author">Eric Simons</a>
-                                <span className="date">January 20th</span>
-                            </div>
-                            <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                                <i className="ion-heart"></i> 29
-                            </button>
-                        </div>
-                        <a href="/article/how-to-buil-webapps-that-scale" className="preview-link">
-                            <h1>How to build webapps that scale</h1>
-                            <p>This is the description for the post.</p>
-                            <span>Read more...</span>
-                            <ul className="tag-list">
-                                <li className="tag-default tag-pill tag-outline">realworld</li>
-                                <li className="tag-default tag-pill tag-outline">implementations</li>
-                            </ul>
-                        </a>
-                    </div>
-
-                    <div className="article-preview">
-                        <div className="article-meta">
-                            <a href="/profile/albert-pai"><img src="http://i.imgur.com/N4VcUeJ.jpg" /></a>
-                            <div className="info">
-                                <a href="/profile/albert-pai" className="author">Albert Pai</a>
-                                <span className="date">January 20th</span>
-                            </div>
-                            <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                                <i className="ion-heart"></i> 32
-                            </button>
-                        </div>
-                        <a href="/article/the-song-you" className="preview-link">
-                            <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-                            <p>This is the description for the post.</p>
-                            <span>Read more...</span>
-                            <ul className="tag-list">
-                                <li className="tag-default tag-pill tag-outline">Music</li>
-                                <li className="tag-default tag-pill tag-outline">Song</li>
-                            </ul>
-                        </a>
-                    </div>
-
-                    <ul className="pagination">
-                        <li className="page-item active">
-                            <a className="page-link" href="">1</a>
-                        </li>
-                        <li className="page-item">
-                            <a className="page-link" href="">2</a>
-                        </li>
-                    </ul>
-                </div>
+              {currentUser ? (
+                <Link
+                  href={`/settings`}
+                  className="btn btn-sm btn-outline-secondary action-btn"
+                >
+                  <i className="ion-gear-a"></i>
+                  &nbsp; Edit Profile Settings
+                </Link>
+              ) : null}
             </div>
+          </div>
         </div>
+      </div>
+
+      <div className="container">
+        <div className="row">
+          <div className="col-xs-12 col-md-10 offset-md-1">
+            <div className="articles-toggle">
+              <ul className="nav nav-pills outline-active">
+                <li className="nav-item">
+                  <Link
+                    className={clsx("nav-link", {
+                      active: searchKey === "author",
+                    })}
+                    href={`/profile/${username}`}
+                  >
+                    My Articles
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    className={clsx("nav-link", {
+                      active: searchKey === "favorited",
+                    })}
+                    href={`/profile/${username}?favorited=1`}
+                  >
+                    Favorited Articles
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {articles.map((article) => {
+              return <Article key={article.slug} article={article} revalidatePath={profilePath} />;
+            })}
+
+            {articles.length ? (
+              <ul className="pagination">
+                {Array.from({ length: totalPages }).map((_, i) => {
+                  const currentPage = i + 1;
+                  return (
+                    <li
+                      className={clsx("page-item", {
+                        active: currentPage === Number(page),
+                      })}
+                      key={currentPage + ""}
+                    >
+                      <a className="page-link" href="">
+                        {currentPage}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : null}
+          </div>
+        </div>
+      </div>
     </div>
+  );
 }

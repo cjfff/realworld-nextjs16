@@ -7,7 +7,7 @@ export default async function Home() {
     fetchClient.GET("/articles"),
     fetchClient.GET("/tags"),
   ]);
-  console.log(articles, tags);
+
   return (
     <div className="home-page">
       <div className="banner">
@@ -22,9 +22,9 @@ export default async function Home() {
           <div className="col-md-9">
             <div className="feed-toggle">
               <ul className="nav nav-pills outline-active">
-                {/* <li className="nav-item">
+                <li className="nav-item">
                   <a className="nav-link" href="">Your Feed</a>
-                </li> */}
+                </li>
                 <li className="nav-item">
                   <a className="nav-link active" href="">
                     Global Feed

@@ -33,9 +33,11 @@ export const deleteArticleAction = async (data: { slug: string }) => {
 export const likePostAction = async ({
   slug,
   favorite,
+  revalidatePath: revalidate,
 }: {
   slug: string;
   favorite: boolean;
+  revalidatePath: string;
 }) => {
   "use server";
   const params = {
@@ -49,7 +51,7 @@ export const likePostAction = async ({
     ? fetchClient.DELETE("/articles/{slug}/favorite", params)
     : fetchClient.POST("/articles/{slug}/favorite", params);
 
-  revalidatePath(`/article/${slug}`);
+  revalidatePath(revalidate);
 };
 
 

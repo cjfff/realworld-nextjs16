@@ -46,13 +46,13 @@ export default async function ArticleMeta({
       ) : null}
       &nbsp;&nbsp;
       <FavoriteButton
-        favorited={article?.favorited}
         count={article?.favoritesCount}
         action={async () => {
           "use server";
           likePostAction({
             favorite: !!article?.favorited,
             slug: article?.slug!,
+            revalidatePath: `/article/${article?.slug}`
           });
         }}
       />
