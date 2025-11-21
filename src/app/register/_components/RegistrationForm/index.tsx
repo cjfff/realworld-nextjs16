@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useTransition } from "react"
+import { useActionState, useRef, useTransition } from "react"
 import { signUpAction } from './action'
 import { useForm } from "react-hook-form"
 import { resolver } from "@/lib/schemas/register"
