@@ -1,8 +1,10 @@
 "use server";
 
 import fetchClient from "@/lib/api";
+import { getSession } from "@/lib/getCookie";
 import { inputsSchema } from "@/lib/schemas/comment";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export type acitonParamas = {
   slug: string;
@@ -10,6 +12,9 @@ export type acitonParamas = {
 }
 
 export const commentAction = async ({ slug, body }: acitonParamas) => {
+  if (!await getSession()) {
+    return redirect('/login')
+  }
   const result = inputsSchema.safeParse({ body });
 
   if (!result.success) {

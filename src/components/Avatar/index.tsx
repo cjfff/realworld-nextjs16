@@ -1,5 +1,5 @@
 import { DetailedHTMLProps, ImgHTMLAttributes } from "react";
-import { defaultAvatarUrl } from "../nav/LoginLink";
+import { defaultAvatarUrl } from "../Nav/LoginLink";
 
 export const Avatar = ({
   src,

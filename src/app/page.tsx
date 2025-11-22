@@ -73,15 +73,19 @@ export default async function Home(props: {
               </ul>
             </div>
 
-            {articles.map((article) => {
-              return (
-                <Article
-                  key={article.slug}
-                  article={article}
-                  revalidatePath={"/"}
-                />
-              );
-            })}
+            {articles.length ? (
+              articles.map((article) => {
+                return (
+                  <Article
+                    key={article.slug}
+                    article={article}
+                    revalidatePath={"/"}
+                  />
+                );
+              })
+            ) : (
+              <div className="my-10">No articles</div>
+            )}
 
             <Pagination
               page={page}

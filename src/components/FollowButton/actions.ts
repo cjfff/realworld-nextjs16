@@ -6,9 +6,10 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 type FollowForm = {
-    following: boolean
-    username: string
-}
+  following: boolean;
+  username: string;
+  refreshUrl: string
+};
 
 export const followAction = async (_: any, values: FollowForm) => {
 
@@ -29,8 +30,8 @@ export const followAction = async (_: any, values: FollowForm) => {
         : fetchClient.DELETE('/profiles/{username}/follow', params)
     )
     
-    if (res.data?.profile) {
-        return revalidatePath('/profile/' + values.username)
+    if (!res.error) {
+        return revalidatePath(values.refreshUrl);
     }
 
 

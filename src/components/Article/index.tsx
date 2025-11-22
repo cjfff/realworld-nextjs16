@@ -1,8 +1,7 @@
 import { components } from "@/consts/schema";
 import { Avatar } from "../Avatar";
 import dayjs from "dayjs";
-import { FavoriteButton } from "@/app/article/[slug]/_components/FavoriteButton";
-import { likePostAction } from "@/app/article/[slug]/actions";
+import { FavoriteButton } from "../FavoriteButton";
 
 export const Article = ({
   article,
@@ -32,14 +31,8 @@ export const Article = ({
           className="pull-xs-right"
           text=""
           count={article?.favoritesCount}
-          action={async () => {
-            "use server";
-            likePostAction({
-              favorite: !!article?.favorited,
-              slug: article?.slug!,
-              revalidatePath: revalidatePath,
-            });
-          }}
+          slug={article.slug}
+          refreshUrl={revalidatePath}
         />
       </div>
       <a href={articleHref} className="preview-link">

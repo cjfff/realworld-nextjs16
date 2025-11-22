@@ -1,11 +1,12 @@
+import Link from "next/link";
+import clsx from "clsx";
+
 import { fetchClient } from "@/lib/api";
 import { getSession } from "@/lib/session";
-import Link from "next/link";
-import { FollowButton } from "./_components/FollowButton/index";
-import { defaultAvatarUrl } from "@/components/nav/LoginLink";
-import clsx from "clsx";
 import { Article } from "@/components/Article";
 import { Pagination } from "@/components/Pagination";
+import { Avatar } from "@/components/Avatar";
+import { FollowButton } from "@/components/FollowButton";
 
 export default async function Profile(props: {
   params: Promise<{ name: string }>;
@@ -19,9 +20,9 @@ export default async function Profile(props: {
   const username = params.name;
   const page = searchParams.page || 1;
   const size = searchParams.size || 10;
-  const searchKey = searchParams.favorited ? 'favorited' : 'author'
+  const searchKey = searchParams.favorited ? "favorited" : "author";
 
-  const profilePath = `/profile/${username}`
+  const profilePath = `/profile/${username}`;
 
   const [profileRes, currentUser, articlesRes] = await Promise.all([
     fetchClient.GET("/profiles/{username}", {
@@ -45,9 +46,6 @@ export default async function Profile(props: {
 
   const profile = profileRes.data?.profile;
   const articles = articlesRes.data?.articles || [];
-  const articlesCount = articlesRes.data?.articlesCount;
-
-  const totalPages = Math.ceil((articlesCount || 1) / size);
 
   return (
     <div className="profile-page">
@@ -55,11 +53,7 @@ export default async function Profile(props: {
         <div className="container">
           <div className="row">
             <div className="col-xs-12 col-md-10 offset-md-1">
-              <img
-                src={profile?.image || defaultAvatarUrl}
-                className="user-img object-fill"
-                alt={profile?.username}
-              />
+              <Avatar className="user-img object-fill" src={profile?.image} />
               <h4>{profile?.username}</h4>
               <p>
                 {profile?.bio ||
@@ -67,7 +61,7 @@ export default async function Profile(props: {
               </p>
               {/* when the profile is the same user with the current login, not need to display the followButton */}
               {currentUser?.username === username ? null : (
-                <FollowButton profileUser={profile} />
+                <FollowButton profileUser={profile} refreshUrl={`/profile/${profile?.username}`}/>
               )}
 
               {currentUser ? (
@@ -112,15 +106,19 @@ export default async function Profile(props: {
               </ul>
             </div>
 
-            {articles.map((article) => {
-              return (
-                <Article
-                  key={article.slug}
-                  article={article}
-                  revalidatePath={profilePath}
-                />
-              );
-            })}
+            {articles?.length ? (
+              articles.map((article) => {
+                return (
+                  <Article
+                    key={article.slug}
+                    article={article}
+                    revalidatePath={profilePath}
+                  />
+                );
+              })
+            ) : (
+              <div className="my-10">No articles</div>
+            )}
 
             <Pagination
               page={page}

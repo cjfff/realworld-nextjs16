@@ -2,20 +2,19 @@ import { Avatar } from "@/components/Avatar";
 import { components } from "@/consts/schema";
 import Link from "next/link";
 import { DeleteArticle } from "../DeleteArticle";
-import {
-  deleteArticleAction,
-  followActions,
-  likePostAction,
-} from "../../actions";
-import { FavoriteButton } from "../FavoriteButton";
-import { FollowButton } from "../FollowButton";
+import { deleteArticleAction, likePostAction } from "../../actions";
+// import { FavoriteButton } from "../FavoriteButton";
+import { FollowButton } from "@/components/FollowButton";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 export default async function ArticleMeta({
   article,
   isAuthor,
+  refreshUrl,
 }: {
   article?: components["schemas"]["Article"];
   isAuthor?: boolean;
+  refreshUrl: string;
 }) {
   const author = article?.author;
 
@@ -32,30 +31,28 @@ export default async function ArticleMeta({
       </div>
       {!isAuthor ? (
         <FollowButton
-          action={async () => {
-            "use server";
-            followActions({
-              slug: article?.slug!,
-              follow: author?.following!,
-              username: author?.username!,
-            });
-          }}
-          following={author?.following}
-          username={author?.username}
+          className="inline"
+          profileUser={author}
+          refreshUrl={refreshUrl}
         />
       ) : null}
       &nbsp;&nbsp;
       <FavoriteButton
+        count={article?.favoritesCount}
+        slug={article?.slug!}
+        refreshUrl={refreshUrl}
+      />
+      {/* <FavoriteButton
         count={article?.favoritesCount}
         action={async () => {
           "use server";
           likePostAction({
             favorite: !!article?.favorited,
             slug: article?.slug!,
-            revalidatePath: `/article/${article?.slug}`
+            revalidatePath: `/article/${article?.slug}`,
           });
         }}
-      />
+      /> */}
       {isAuthor ? (
         <>
           <button className="btn btn-sm btn-outline-secondary">
