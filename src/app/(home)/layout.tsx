@@ -5,15 +5,9 @@ import { getSession } from "@/lib/session";
 import React from "react";
 import Tags from "./_components/Tags";
 
-export default async function Home({
+export default async function HomeLayout({
   children,
 }: {
-  searchParams: Promise<{
-    page?: number;
-    size: number;
-    tag: string;
-    feed: string;
-  }>;
   children: React.ReactNode;
 }) {
 
