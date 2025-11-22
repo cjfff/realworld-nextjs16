@@ -21,6 +21,7 @@ export const likePostAction = async (
   if (!(await getSession())) {
     return redirect("/login");
   }
+
   const params = {
     params: {
       path: {
@@ -28,7 +29,8 @@ export const likePostAction = async (
       },
     },
   };
-  (await favorite)
+
+  ;(await favorite)
     ? fetchClient.DELETE("/articles/{slug}/favorite", params)
     : fetchClient.POST("/articles/{slug}/favorite", params);
 

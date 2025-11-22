@@ -9,11 +9,9 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 export default async function ArticleMeta({
   article,
   isAuthor,
-  refreshUrl,
 }: {
   article?: components["schemas"]["Article"];
   isAuthor?: boolean;
-  refreshUrl: string;
 }) {
   const author = article?.author;
 
@@ -38,19 +36,8 @@ export default async function ArticleMeta({
       <FavoriteButton
         count={article?.favoritesCount}
         slug={article?.slug!}
-        refreshUrl={refreshUrl}
+        favorite={article?.favorited}
       />
-      {/* <FavoriteButton
-        count={article?.favoritesCount}
-        action={async () => {
-          "use server";
-          likePostAction({
-            favorite: !!article?.favorited,
-            slug: article?.slug!,
-            revalidatePath: `/article/${article?.slug}`,
-          });
-        }}
-      /> */}
       {isAuthor ? (
         <>
           <button className="btn btn-sm btn-outline-secondary">

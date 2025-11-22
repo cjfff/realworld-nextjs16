@@ -45,9 +45,7 @@ export default async function ArticleDetail({
   // parse html
   const processedContent = await remark().use(html).process(article?.body);
   const contentHtml = processedContent.toString();
-
-  const refreshUrl = `/article/${slug}`;
-
+  
   return (
     <div className="article-page">
       <div className="banner">
@@ -57,7 +55,6 @@ export default async function ArticleDetail({
           <ArticleMeta
             article={article}
             isAuthor={isAuthor}
-            refreshUrl={refreshUrl}
           />
         </div>
       </div>

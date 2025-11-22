@@ -5,10 +5,8 @@ import { FavoriteButton } from "../FavoriteButton";
 
 export const Article = ({
   article,
-  revalidatePath,
 }: {
   article: Omit<components["schemas"]["Article"], "body">;
-  revalidatePath: string;
 }) => {
   const profileHref = `/profile/${article.author.username}`;
   const articleHref = `/article/${article.slug}`;
@@ -32,7 +30,7 @@ export const Article = ({
           text=""
           count={article?.favoritesCount}
           slug={article.slug}
-          refreshUrl={revalidatePath}
+          favorite={article.favorited}
         />
       </div>
       <a href={articleHref} className="preview-link">

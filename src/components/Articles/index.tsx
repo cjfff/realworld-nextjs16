@@ -6,7 +6,6 @@ type Article = Omit<components["schemas"]["Article"], "body">
 
 export default ({
   articles,
-  revalidatePath,
   page,
   size,
   total,
@@ -15,7 +14,6 @@ export default ({
   page: number;
   size: number;
   total: number;
-  revalidatePath: string;
 }) => {
   return (
     <>
@@ -25,7 +23,6 @@ export default ({
             <Article
               key={article.slug}
               article={article}
-              revalidatePath={revalidatePath}
             />
           );
         })
