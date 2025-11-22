@@ -1,7 +1,7 @@
-// "use client"
 import Link from 'next/link'
 
 import { fetchClient } from "@/lib/api"
+import Image from 'next/image'
 
 export const defaultAvatarUrl = 'https://raw.githubusercontent.com/gothinkster/node-express-realworld-example-app/refs/heads/master/src/assets/images/smiley-cyrus.jpeg'
 
@@ -12,7 +12,7 @@ export const LoginLink = async () => {
 
     return <li className="nav-item">
         <Link className={"nav-link"} href={`/profile/${user?.username}`}>
-            <img src={user?.image || defaultAvatarUrl} className="user-pic" />{user?.username}
+            <Image alt={user?.username || "avatar"} src={user?.image || defaultAvatarUrl} className="user-pic" />{user?.username}
         </Link>
     </li>
 }

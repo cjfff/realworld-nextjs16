@@ -39,7 +39,6 @@ export default async function Profile(props: {
       total={total}
       page={page}
       size={size}
-      revalidatePath={pathname!}
     />
   );
 }
