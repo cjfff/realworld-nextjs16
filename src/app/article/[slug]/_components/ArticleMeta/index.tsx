@@ -2,8 +2,7 @@ import { Avatar } from "@/components/Avatar";
 import { components } from "@/consts/schema";
 import Link from "next/link";
 import { DeleteArticle } from "../DeleteArticle";
-import { deleteArticleAction, likePostAction } from "../../actions";
-// import { FavoriteButton } from "../FavoriteButton";
+import { deleteArticleAction } from "../../actions";
 import { FollowButton } from "@/components/FollowButton";
 import { FavoriteButton } from "@/components/FavoriteButton";
 
