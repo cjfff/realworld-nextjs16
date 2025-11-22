@@ -83,7 +83,6 @@ export default async function ArticleDetail({
           <ArticleMeta
             article={article}
             isAuthor={isAuthor}
-            refreshUrl={refreshUrl}
           />
         </div>
 
