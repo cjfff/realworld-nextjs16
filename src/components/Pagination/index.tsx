@@ -1,12 +1,16 @@
+"use client"
+
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
+
 
 export const Pagination = (props: {
-  pathPrefix: string;
   page: number;
   size: number;
   total: number;
 }) => {
-  const { page, pathPrefix, size, total } = props;
+  const pathname = usePathname()
+  const { page, size, total } = props;
   const totalPages = Math.ceil(total / size);
   if (total === 0 || totalPages <= 1) {
     return;
@@ -25,8 +29,8 @@ export const Pagination = (props: {
           >
             <a
               className="page-link"
-              href={`${pathPrefix}${
-                pathPrefix.includes("?") ? "%" : "?"
+              href={`${pathname}${
+                pathname.includes("?") ? "%" : "?"
               }page=${currentPage}`}
             >
               {currentPage}

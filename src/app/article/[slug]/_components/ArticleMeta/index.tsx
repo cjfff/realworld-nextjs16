@@ -32,7 +32,6 @@ export default async function ArticleMeta({
         <FollowButton
           className="inline"
           profileUser={author}
-          refreshUrl={refreshUrl}
         />
       ) : null}
       &nbsp;&nbsp;

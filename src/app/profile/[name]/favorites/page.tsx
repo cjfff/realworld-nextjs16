@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 
 export default async function Profile(props: {
   params: Promise<{ name: string }>;
-  searchParams: Promise<{ page?: number; size: number; favorited: string }>;
+  searchParams: Promise<{ page?: number; size: number }>;
 }) {
   const [params, searchParams] = await Promise.all([
     props.params,

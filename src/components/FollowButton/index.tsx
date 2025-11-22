@@ -3,14 +3,13 @@
 import { components } from "@/consts/schema";
 import { followAction } from "./actions";
 import { DetailedHTMLProps, FormHTMLAttributes, useActionState, useRef, useTransition } from "react";
+import { usePathname } from "next/navigation";
 
 export const FollowButton = ({
   profileUser,
-  refreshUrl,
   ...rest
 }: {
   profileUser?: components["schemas"]["Profile"] | null;
-  refreshUrl: string;
 } & DetailedHTMLProps<
   FormHTMLAttributes<HTMLFormElement>,
   HTMLFormElement
@@ -18,6 +17,7 @@ export const FollowButton = ({
   const [, dispatch, isPending] = useActionState(followAction, undefined);
   const formRef = useRef<HTMLFormElement>(null);
   const [, startTransition] = useTransition();
+  const pathname = usePathname()
   return (
     <form
       {...rest}
@@ -28,7 +28,7 @@ export const FollowButton = ({
           dispatch({
             following: profileUser?.following!,
             username: profileUser?.username!,
-            refreshUrl,
+            refreshUrl: pathname,
           });
         });
       }}
