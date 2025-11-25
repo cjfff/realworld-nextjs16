@@ -2,6 +2,9 @@ import 'server-only'
 import { SessionPayload } from '@/lib/definitions'
 import { cookies } from 'next/headers'
 import { cookieKey, encrypt, decrypt } from './getCookie'
+import { cache } from 'react'
+import fetchClient from './api'
+import { redirect } from 'next/navigation'
 
 export async function createSession(token: string) {
     "use server"
@@ -52,3 +55,16 @@ export async function getSession() {
     return (user as SessionPayload)?.token
 }
 
+export const getUser = cache(async () => {
+    const userRes = await fetchClient.GET('/user')
+
+    return userRes.data?.user;
+})
+
+export const requireUser = async () => {
+    const user = await getUser()
+
+    if (!user) redirect('/login')
+
+    return user
+}

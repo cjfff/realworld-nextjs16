@@ -8,10 +8,13 @@ import { ErrorMessage } from "@/components/ErrorMessage"
 import { useResettableActionState } from "@/hooks/useResetActionState"
 import { useErrorSync } from "@/hooks/useSyncError"
 import { components } from "@/consts/schema"
+import { Container } from "@/context/user"
 
-export function SettingsForm({ user }: { user: components['schemas']['User'] }) {
+export function SettingsForm() {
 
     const [state, disaptch, isPending, reset] = useResettableActionState(updateAction, undefined)
+
+    const {user} = Container.useContainer()
 
     const formRef = useRef<HTMLFormElement>(null)
 
@@ -21,8 +24,8 @@ export function SettingsForm({ user }: { user: components['schemas']['User'] }) 
         errors: {},
         defaultValues: {
             ...user,
-            image: user.image || '',
-            bio: user.bio || '',
+            image: user?.image || '',
+            bio: user?.bio || '',
             password: null
         }
     })

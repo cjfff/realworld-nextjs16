@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { fetchClient } from "@/lib/api";
-import { getSession } from "@/lib/session";
+import { getUser } from "@/lib/session";
 import { Avatar } from "@/components/Avatar";
 import { FollowButton } from "@/components/FollowButton";
 import { NavLinks } from "@/components/NavLinks";
@@ -27,7 +27,7 @@ export default async function ProfileLayout({
         },
       },
     }),
-    (await getSession()) ? (await fetchClient.GET("/user")).data?.user : null,
+   await getUser()
   ]);
 
   const profile = profileRes.data?.profile;

@@ -8,6 +8,8 @@ import {
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import * as React from 'react'
 import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental'
+import { components } from '@/consts/schema'
+import { Container } from '@/context/user'
 
 function makeQueryClient() {
     return new QueryClient({
@@ -30,15 +32,23 @@ function getQueryClient() {
     }
 }
 
-export function Providers(props: { children: React.ReactNode }) {
-    const queryClient = getQueryClient()
+export function Providers({
+  children,
+  user,
+}: {
+  children: React.ReactNode;
+  user?: components["schemas"]["User"];
+}) {
+  const queryClient = getQueryClient();
 
-    return (
-        <QueryClientProvider client={queryClient}>
-            <ReactQueryStreamedHydration>
-                {props.children}
-            </ReactQueryStreamedHydration>
-            <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-    )
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryStreamedHydration>
+        <Container.Provider initialState={user}>
+            {children}
+        </Container.Provider>
+      </ReactQueryStreamedHydration>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  );
 }

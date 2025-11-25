@@ -5,15 +5,18 @@ import { DeleteArticle } from "../DeleteArticle";
 import { deleteArticleAction } from "../../actions";
 import { FollowButton } from "@/components/FollowButton";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { getUser } from "@/lib/session";
 
 export default async function ArticleMeta({
   article,
-  isAuthor,
 }: {
   article?: components["schemas"]["Article"];
-  isAuthor?: boolean;
 }) {
   const author = article?.author;
+
+  const user = await getUser();
+  const isAuthor = user?.username === author?.username
+
 
   return (
     <div className="article-meta">

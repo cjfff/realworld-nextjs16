@@ -7,8 +7,9 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { useRef, useTransition } from "react";
 import { useParams } from "next/navigation";
 import { LoadingButton } from "@/components/LoadingButton";
+import { Container } from "@/context/user";
 
-export const Comment = ({ image }: { image?: string }) => {
+export const Comment = () => {
   const [state, dispatch, isPending] = useResettableActionState(
     (_: any, data: acitonParamas) => commentAction(data),
     undefined
@@ -16,6 +17,7 @@ export const Comment = ({ image }: { image?: string }) => {
   const [_, startTransition] = useTransition();
   const { slug } = useParams();
   const formRef = useRef<HTMLFormElement>(null);
+  const { user } = Container.useContainer();
 
   return (
     <>
@@ -46,7 +48,7 @@ export const Comment = ({ image }: { image?: string }) => {
           ></textarea>
         </div>
         <div className="card-footer">
-          <Avatar src={image} className="comment-author-img" />
+          <Avatar src={user?.image} className="comment-author-img" />
           <LoadingButton loading={isPending}>Post Comment</LoadingButton>
         </div>
       </form>

@@ -8,6 +8,7 @@ import { Comment } from "./_components/CommentForm";
 import { Avatar } from "@/components/Avatar";
 import { deleteCommentAction } from "./actions";
 import { DeleteComment } from "./_components/DeleteComment";
+import { getUser } from "@/lib/session";
 
 export default async function ArticleDetail({
   params,
@@ -16,7 +17,7 @@ export default async function ArticleDetail({
 }) {
   const { slug } = await params;
 
-  const [res, currentUserRes, commentsRes] = await Promise.all([
+  const [res, currentUser, commentsRes] = await Promise.all([
     fetchClient.GET("/articles/{slug}", {
       params: {
         path: {
@@ -24,7 +25,7 @@ export default async function ArticleDetail({
         },
       },
     }),
-    fetchClient.GET("/user"),
+    getUser(),
     fetchClient.GET("/articles/{slug}/comments", {
       params: {
         path: {
@@ -34,28 +35,20 @@ export default async function ArticleDetail({
     }),
   ]);
 
-  const currentUser = currentUserRes.data?.user;
-
   const article = res.data?.article;
   const comments = commentsRes.data?.comments;
-  const author = article?.author;
-
-  const isAuthor = currentUser?.username === author?.username;
 
   // parse html
   const processedContent = await remark().use(html).process(article?.body);
   const contentHtml = processedContent.toString();
-  
+
   return (
     <div className="article-page">
       <div className="banner">
         <div className="container">
           <h1>{article?.title}</h1>
 
-          <ArticleMeta
-            article={article}
-            isAuthor={isAuthor}
-          />
+          <ArticleMeta article={article} />
         </div>
       </div>
 
@@ -80,15 +73,12 @@ export default async function ArticleDetail({
         <hr />
 
         <div className="article-actions">
-          <ArticleMeta
-            article={article}
-            isAuthor={isAuthor}
-          />
+          <ArticleMeta article={article} />
         </div>
 
         <div className="row">
           <div className="col-xs-12 col-md-8 offset-md-2">
-            <Comment image={currentUser?.image} />
+            <Comment />
 
             {comments?.map((comment) => {
               return (

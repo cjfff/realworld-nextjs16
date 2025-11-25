@@ -1,26 +1,29 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { updateSession, getSession } from "./lib/session";
+import { updateSession, getUser } from "./lib/session";
 
 const authorizationpaths = ["/editor", "/settings"];
 
 const unAuthorizationpaths = ["/login", "/register"];
 
 export async function proxy(request: NextRequest) {
-  await updateSession();
-  const token = await getSession();
+  const user = await getUser()
+
+  if (user) {
+    await updateSession();
+  }
   
   const pathname = request.nextUrl.pathname;
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", pathname);
 
   if (
-    !token &&
+    !user &&
     authorizationpaths.some((path) => request.nextUrl.pathname.startsWith(path))
   ) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (token && unAuthorizationpaths.some((path) => pathname.startsWith(path))) {
+  if (user && unAuthorizationpaths.some((path) => pathname.startsWith(path))) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 

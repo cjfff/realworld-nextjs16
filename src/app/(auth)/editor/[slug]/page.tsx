@@ -3,6 +3,7 @@ import ArticleForm from "../_components/ArticleForm";
 import { Inputs } from "@/lib/schemas/newArticle";
 import fetchClient from "@/lib/api";
 import { redirect } from "next/navigation";
+import { getUser } from "@/lib/session";
 
 export default async function Article({
   params,
@@ -21,7 +22,7 @@ export default async function Article({
         },
       })
       .then((res) => res.data?.article),
-    fetchClient.GET("/user").then((res) => res.data?.user),
+    getUser()
   ] as const);
 
   const submit = async (_: any, values: Inputs) => {
