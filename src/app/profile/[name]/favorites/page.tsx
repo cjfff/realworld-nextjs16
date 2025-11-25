@@ -1,6 +1,5 @@
 import Articles from "@/components/Articles";
 import { fetchClient } from "@/lib/api";
-import { headers } from "next/headers";
 
 export default async function Profile(props: {
   params: Promise<{ name: string }>;
@@ -10,13 +9,10 @@ export default async function Profile(props: {
     props.params,
     props.searchParams,
   ]);
-  const headersList = await headers();
-  const pathname = headersList.get("x-pathname") || "";
 
   const username = params?.name;
   const page = searchParams?.page || 1;
   const size = searchParams?.size || 10;
-  const searchKey = pathname?.includes("favorites") ? "favorited" : "author";
 
   const [articlesRes] = await Promise.all([
     fetchClient.GET("/articles", {
@@ -24,7 +20,7 @@ export default async function Profile(props: {
         query: {
           limit: size,
           offset: size * (page - 1),
-          [searchKey]: username,
+          favorited: username,
         },
       },
     }),

@@ -1,6 +1,6 @@
 import { NavLinks } from "@/components/NavLinks";
 import { fetchClient } from "@/lib/api";
-import { getSession } from "@/lib/session";
+import { getUser } from "@/lib/session";
 
 import React from "react";
 import Tags from "./_components/Tags";
@@ -11,7 +11,7 @@ export default async function HomeLayout({
   children: React.ReactNode;
 }) {
 
-  const isLogin = !!(await getSession());
+  const isLogin = !!(await getUser());
   const [tags] = await Promise.all([
     fetchClient.GET("/tags"),
   ]);
