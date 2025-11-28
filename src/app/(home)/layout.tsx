@@ -1,21 +1,16 @@
 import { NavLinks } from "@/components/NavLinks";
-import { fetchClient } from "@/lib/api";
 import { getUser } from "@/lib/session";
 
-import React from "react";
-import Tags from "./_components/Tags";
+import React, { Suspense } from "react";
+import TagsWrapper from "./_components/TagsWrapper";
+import TagLoading from "./_components/TagLoading";
 
 export default async function HomeLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
   const isLogin = !!(await getUser());
-  const [tags] = await Promise.all([
-    fetchClient.GET("/tags"),
-  ]);
-
 
   const navs = [
     {
@@ -50,10 +45,13 @@ export default async function HomeLayout({
           </div>
 
           <div className="col-md-3">
-            <div className="sidebar">
-              <p>Popular Tags</p>
-              <Tags tags={tags.data?.tags} />
-            </div>
+            <Suspense fallback={<TagLoading />}>
+              <div className="sidebar">
+                <p>Popular Tags</p>
+                <TagsWrapper />
+              </div>
+            </Suspense>
+            
           </div>
         </div>
       </div>
